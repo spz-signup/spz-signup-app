@@ -849,7 +849,6 @@ class ExportCourseForm(FlaskForm):
         ]
 
 
-
 class AddTeacherForm(FlaskForm):
     """Represents the form to add teachers to database.
 
@@ -909,8 +908,8 @@ class AddTeacherForm(FlaskForm):
         return [models.Course.query.get(id) for id in self.courses.data]
 
     def get_teacher(self):
-        existing = models.Teacher.query.filter(
-            func.lower(models.Teacher.mail) == func.lower(self.get_mail())
+        existing = models.User.query.filter(
+            func.lower(models.User.email) == func.lower(self.get_mail())
         ).first()
         if existing:
             return existing
@@ -977,20 +976,20 @@ class EditTeacherForm(FlaskForm):
         self.teacher = teacher
         self.first_name.data = self.teacher.first_name
         self.last_name.data = self.teacher.last_name
-        self.mail.data = self.teacher.mail
+        self.mail.data = self.teacher.email
         self.tag.data = self.teacher.tag
 
     def get_teacher(self):
         return self.teacher
 
     def get_courses(self):
-        return self.teacher.courses if self.teacher else None
+        return self.teacher.admin_courses if self.teacher else None
 
     def get_languages(self):
         language_ids = []
         languages = []
         if self.teacher is not None:
-            for course in self.teacher.courses:
+            for course in self.teacher.admin_courses:
                 if course.language_id not in language_ids:
                     language_ids.append(course.language_id)
                     db_lang = models.Language.query.get_or_404(course.language_id)
@@ -1016,14 +1015,10 @@ class EditTeacherForm(FlaskForm):
         return self.send_mail.data
 
 
-
-
 class CourseForm(FlaskForm):
     """ A form to select different participants in that specific course
     """
     identifier = StringField()
-
-
 
 
 class GradeSubform(Form):
@@ -1036,5 +1031,3 @@ class GradeSubform(Form):
 
 class GradeForm(FlaskForm):
     grades = FieldList(FormField(GradeSubform))
-
-
