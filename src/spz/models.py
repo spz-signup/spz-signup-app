@@ -850,6 +850,15 @@ class Role(db.Model):
         self.course = course
         self.role = role
 
+# helper table for Teacher Table <-- Language Many2Many relationship
+"""
+teachers_lang_table = db.Table(
+    'teachers_help',
+    db.Model.metadata,
+    db.Column('teacher_id', db.Integer, db.ForeignKey('teacher.id')),
+    db.Column('course_id', db.Integer, db.ForeignKey('course.id'))
+)
+"""
 
 class User(db.Model):
     """User for internal UI
@@ -914,31 +923,6 @@ class User(db.Model):
         return sorted(admin_courses, key=lambda x: x.full_name)
 
     @property
-    def is_language_admin(self):
-        if self.is_superuser:
-            return True
-
-        # Fetch all course ids for which the user has a COURSE_ADMIN role
-        admin_course_ids = set(role.course_id for role in self.roles if role.role == Role.COURSE_ADMIN)
-        # return False immediately if no admin courses are present
-        if not admin_course_ids:
-            return False
-
-        # group admin courses by language
-        admin_courses_by_language = {}
-        for course in self.admin_courses:
-            admin_courses_by_language.setdefault(course.language_id, set()).add(course.id)
-
-        # Check if the user is an admin for all courses of any language
-        # .values method returns tuples -> needs extraction to match the admin_course_ids set
-        for language_id, language_course_ids in admin_courses_by_language.items():
-            all_language_course_ids = set(id for (id,) in Course.query.filter_by(language_id=language_id).values('id'))
-            if all_language_course_ids.issubset(admin_course_ids):
-                return True
-
-        return False
-
-    @property
     def is_active(self):
         """Report if user is active."""
         return self.active
@@ -1001,7 +985,6 @@ class User(db.Model):
     def full_name(self):
         return '{} {}'.format(self.first_name, self.last_name)
 
-
 """
 class Teacher(db.Model):
     Teacher for internal UI
@@ -1052,7 +1035,6 @@ class Teacher(db.Model):
     def add_course(self, course):
         self.courses.append(course)
 """
-
 
 @total_ordering
 class LogEntry(db.Model):

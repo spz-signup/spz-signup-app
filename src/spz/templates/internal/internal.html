@@ -16,7 +16,7 @@
     <a class="item" href="{{ url_for('statistics') }}"><i class="pie chart icon"></i> Statistiken</a>
     <a class="item" href="{{ url_for('duplicates') }}"><i class="random icon"></i> Doppelgänger</a>
     <a class="item" href="{{ url_for('administration_teacher') }}"><i class="users icon"></i> Lehrbeauftragte</a>
-
+  
     {% if current_user.superuser %}
     <a class="item" href="{{ url_for('preterm') }}"><i class="star icon"></i> Prioritär&shy;anmeldungen</a>
     {% endif %}
@@ -34,7 +34,7 @@ Interner Bereich
 {% block subcaption %}
 <div class="pull-right no-print">
 {% if current_user.is_authenticated %}
-    Angemeldet als <strong>{{ current_user.email }} ({% if current_user.is_superuser %}SUPERUSER{% elif current_user.is_language_admin %}Fachleiter{% else %}Kursadministrator{% endif %})</strong>
+    Angemeldet als <strong>{{ current_user.email }} ({% if current_user.is_superuser %}SUPERUSER{% else %}Kursadministrator{% endif %})</strong>
 (<a href="{{ url_for('logout')  }}" class="signout">Abmelden</a>)
 {% else %}
     Nicht angemeldet. <a href="{{ url_for('login') }}" class="signin">Anmelden</a>
