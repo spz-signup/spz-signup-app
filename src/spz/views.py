@@ -33,7 +33,6 @@ from spz.oidc import oidc_callback, oidc_url, oidc_get_resources
 from spz.pdf_zip import PdfZipWriter, html_response
 from spz.pdf import generate_participation_cert
 
-
 from spz.administration import TeacherManagement
 
 
@@ -822,7 +821,6 @@ def course(id):
             return html_response(zip_file, "Teilnahmescheine_{}".format(course.full_name))
 
     if form.identifier.data == 'form-delete' and form_delete.validate_on_submit() and current_user.is_superuser:
-
         try:
             deleted = 0
             name = course.full_name

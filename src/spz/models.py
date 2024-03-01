@@ -836,6 +836,7 @@ class Role(db.Model):
     SUPERUSER = 'SUPERUSER'
     COURSE_ADMIN = 'COURSE_ADMIN'
 
+
     __tablename__ = 'role'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -881,6 +882,7 @@ class User(db.Model):
     pwsalted = db.Column(db.LargeBinary(32), nullable=True)
     roles = db.relationship('Role')
 
+
     def __init__(self, first_name, last_name, email, active, roles, tag=None):
         """Create new user without password."""
         self.first_name = first_name
@@ -921,6 +923,7 @@ class User(db.Model):
     def admin_courses(self):
         admin_courses = (role.course for role in [r for r in self.roles if r.role == Role.COURSE_ADMIN])
         return sorted(admin_courses, key=lambda x: x.full_name)
+
 
     @property
     def is_active(self):

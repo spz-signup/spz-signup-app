@@ -36,7 +36,6 @@ __all__ = [
     'TagForm',
     'SignoffForm',
     'ExportCourseForm',
-    'CourseForm',
     'AddTeacherForm',
     'EditTeacherForm',
     'GradeForm'
@@ -1016,10 +1015,6 @@ class EditTeacherForm(FlaskForm):
         return self.send_mail.data
 
 
-class CourseForm(FlaskForm):
-    """ A form to select different participants in that specific course
-    """
-    identifier = StringField()
 
 
 class GradeSubform(Form):
@@ -1029,3 +1024,4 @@ class GradeSubform(Form):
 
 class GradeForm(FlaskForm):
     grades = FieldList(FormField(GradeSubform))
+
