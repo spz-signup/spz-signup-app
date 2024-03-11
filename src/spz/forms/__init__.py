@@ -38,7 +38,13 @@ __all__ = [
     'ExportCourseForm',
     'AddTeacherForm',
     'EditTeacherForm',
-    'GradeForm'
+    'CourseForm',
+    'GradeSubform',
+    'GradeForm',
+    'VacanciesForm',
+    'DeleteCourseForm',
+    'TriStateField',
+    'TriStateLabel'
 ]
 
 
@@ -1015,6 +1021,10 @@ class EditTeacherForm(FlaskForm):
         return self.send_mail.data
 
 
+class CourseForm(FlaskForm):
+    """ A form to select different participants in that specific course
+    """
+    identifier = StringField()
 
 
 class GradeSubform(Form):
@@ -1025,3 +1035,6 @@ class GradeSubform(Form):
 class GradeForm(FlaskForm):
     grades = FieldList(FormField(GradeSubform))
 
+
+class AttendanceForm(FlaskForm):
+    attendance = HiddenField("attendance_id")
