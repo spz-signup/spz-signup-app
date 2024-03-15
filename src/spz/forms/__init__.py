@@ -39,8 +39,6 @@ __all__ = [
     'AddTeacherForm',
     'EditTeacherForm',
     'CourseForm',
-    'GradeSubform',
-    'GradeForm',
     'VacanciesForm',
     'DeleteCourseForm',
     'TriStateField',
@@ -1027,15 +1025,22 @@ class CourseForm(FlaskForm):
     identifier = StringField()
 
 
-class GradeSubform(Form):
-    grade = IntegerField("Note", validators=[
-        validators.DataRequired(message="Hier wurde keine Note eingetragen."),
-        validators.NumberRange(min=0, max=100, message="Note muss eine Prozentzahl zwischen 0 und 100 sein.")
-    ])
+def create_grade_form(applicants):
+    """
+    Dynamically creates a GradeForm class with fields for each applicant.
+    """
 
+    class GradeForm(FlaskForm):
+        pass
 
-class GradeForm(FlaskForm):
-    grades = FieldList(FormField(GradeSubform))
+    for applicant in applicants:
+        field_name = f'grade_{applicant.id}'
+        setattr(GradeForm, field_name,
+                IntegerField("Note", validators=[validators.NumberRange(min=0, max=100)],
+                             default=applicant.grade))
+
+    return GradeForm
+
 
 class AttendanceForm(FlaskForm):
     attendance = HiddenField("attendance_id")
