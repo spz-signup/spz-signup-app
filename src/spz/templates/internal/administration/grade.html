@@ -3,9 +3,10 @@
 
 {% block caption %}
     Kurs: {% if current_user.is_admin_or_superuser %}
-    <a href="{{ url_for('language', id=course.language.id) }}">{{ course.language.name }}</a>
-    {% else %}{{ course.language.name }} {% endif %} {{ course.level }}
-    {{ course.alternative }}
+    <a href="{{ url_for('course', id=course.id) }}">{{ course.language.name }} {{ course.level }}
+    {{ course.alternative }}</a>
+    {% else %}{{ course.language.name }} {{ course.level }}
+    {{ course.alternative }} {% endif %}
 {% endblock caption %}
 
 
