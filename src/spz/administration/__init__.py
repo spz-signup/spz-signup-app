@@ -133,7 +133,7 @@ class TeacherManagement:
         max_row = app.config['MAX_ROWS']
         # check course name in 'Notenliste' sheet -> throw warning if not matching with course
         grade_sheet = grade_wb['Notenliste']
-        if grade_sheet.max_row < max_row:
+        if grade_sheet.max_row is not None and grade_sheet.max_row < max_row:
             max_row = grade_sheet.max_row
         for row in grade_sheet.iter_rows(min_row=40, max_col=3, max_row=50):
             for cell in row:
@@ -146,7 +146,7 @@ class TeacherManagement:
 
         # grade import
         rawdata_sheet = grade_wb['RAWDATA']
-        if rawdata_sheet.max_row < max_row:
+        if rawdata_sheet.max_row is not None and rawdata_sheet.max_row < max_row:
             max_row = rawdata_sheet.max_row
         # in rawdata mails are saved in column H, starting from line 2
         mail_col = app.config['DEFAULT_MAIL_COLUMN']
@@ -214,7 +214,7 @@ class TeacherManagement:
             if not validate_email(read_mail):
                 warnings.append((0, mail_row[0].coordinate, _('Ungültige E-Mail-Adresse: "{}"'.format(read_mail)))
                                 )
-            elif not is_valid_float(read_grade) or to_float(read_grade) < 0 or to_float(read_grade) > 100:
+            elif not is_valid_float(read_grade) or to_float(read_grade) is None or to_float(read_grade) < 0 or to_float(read_grade) > 100:
                 warnings.append((1, grade_row[0].coordinate, _('Ungültige Note (keine Zahl zwischen 0 und 100): "{}"'.format(read_grade)))
                                 )
             else:
