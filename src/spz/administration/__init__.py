@@ -152,6 +152,9 @@ class TeacherManagement:
         mail_col = app.config['DEFAULT_MAIL_COLUMN']
         grade_col = app.config['DEFAULT_GRADE_COLUMN']
         ects_col = app.config['DEFAULT_ECTS_COLUMN']
+        hide_grade_col = app.config['DEFAULT_HIDE_GRADE_COLUMN']
+        ts_requested_col = app.config['DEFAULT_TS_REQUESTED_COLUMN']
+        ts_received_col = app.config['DEFAULT_TS_RECEIVED_COLUMN']
 
         if course.language.import_format_id is not None:
             import_format = models.ImportFormat.query.get(course.language.import_format_id)
@@ -161,27 +164,39 @@ class TeacherManagement:
                     mail_col = import_format.mail_column
                 if import_format.ects_column:
                     ects_col = import_format.ects_column
+                if import_format.hide_grade_column:
+                    hide_grade_col = import_format.hide_grade_column
+                if import_format.ts_requested_column:
+                    ts_requested_col = import_format.ts_requested_column
+                if import_format.ts_received_column:
+                    ts_received_col = import_format.ts_received_column
 
         # specific solution for language: Spanish
         if course.language.name == 'Spanisch' and course.level and not is_valid_float(course.level[-1]):
             # dont use default spanish template 'Spanisch Hueber' for other courses without book
-            # set columns for 'Spanisch' template manually
+            # set columns for 'Spanisch' template manually (hardcoded, specific solution because Spanish has two different templates)
             mail_col = 'H'
             grade_col = 'E'
             ects_col = 'H'
+            hide_grade_col = 'H'
+            ts_requested_col = 'J'
+            ts_received_col = 'L'
 
         # convert column letters to integer
         mail_col_idx = column_index_from_string(mail_col)
         grade_col_idx = column_index_from_string(grade_col)
         ects_col_idx = column_index_from_string(ects_col)
+        hide_grade_col_idx = column_index_from_string(hide_grade_col)
+        ts_requested_col_idx = column_index_from_string(ts_requested_col)
+        ts_received_col_idx = column_index_from_string(ts_received_col)
 
         # warnings importing the grades, tuple: (work sheet, coordinate, text)
         # rawdata -> 0, Notenliste -> 1
         warnings = []
 
         success = 0
-        # simultaneously iterate over mail column in RAWDATA sheet and grade column in Notenliste sheet
-        for mail_row, grade_row, ects_row in zip(
+        # simultaneously iterate over mail column in RAWDATA sheet and grade column in Notenliste sheet (and additional columns)
+        for mail_row, grade_row, ects_row, hide_grade_row, ts_req_row, ts_rec_row in zip(
             rawdata_sheet.iter_rows(
                 min_col=mail_col_idx,
                 max_col=mail_col_idx,
@@ -196,12 +211,31 @@ class TeacherManagement:
                 min_col=ects_col_idx,
                 max_col=ects_col_idx,
                 min_row=2,
+                max_row=max_row),
+            grade_sheet.iter_rows(
+                min_col=hide_grade_col_idx,
+                max_col=hide_grade_col_idx,
+                min_row=2,
+                max_row=max_row),
+            grade_sheet.iter_rows(
+                min_col=ts_requested_col_idx,
+                max_col=ts_requested_col_idx,
+                min_row=2,
+                max_row=max_row),
+            grade_sheet.iter_rows(
+                min_col=ts_received_col_idx,
+                max_col=ts_received_col_idx,
+                min_row=2,
                 max_row=max_row)
         ):
             # rows returned as a tuple, obtain first and only element
             read_mail = mail_row[0].value
             read_grade = grade_row[0].value
+            # additional import attributes
             read_ects = ects_row[0].value
+            read_hide_grade = hide_grade_row[0].value
+            read_ts_requested = ts_req_row[0].value
+            read_ts_received = ts_rec_row[0].value
 
             if read_mail is None or read_grade is None or read_grade == 0:
                 #if read_grade is None and read_mail is not None:
@@ -227,9 +261,16 @@ class TeacherManagement:
                     if attendance:
                         attendance.grade = to_float(read_grade)
 
-                        # update ects if entered
-                        if read_ects and is_valid_float(read_ects):
+                        # update ects if present
+                        if read_ects and is_valid_float(read_ects): # checks for None and not empty string AND valid float
                             attendance.ects_points = to_float(read_ects)
+                        # import grade markup attributes
+                        if read_hide_grade and str(read_hide_grade).strip().lower() == 'x':
+                            attendance.hide_grade = True
+                        if read_ts_requested and str(read_ts_requested).strip().lower() == 'x':
+                            attendance.ts_requested = True
+                        if read_ts_received and str(read_ts_received).strip().lower() == 'x':
+                            attendance.ts_received = True
 
                         success += 1
                     else:

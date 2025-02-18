@@ -139,7 +139,7 @@ class Attendance(db.Model):
 
     ts_requested = db.Column(db.Boolean, default=False)
     ts_received = db.Column(db.Boolean, default=False)
-    ps_received = db.Column(db.Boolean, default=False) # ToDo: remove, not required by management
+    ps_received = db.Column(db.Boolean, default=False)  # ToDo: remove, not required by management
 
     def __init__(self, course, graduation, waiting, discount, informed_about_rejection=False):
         self.course = course
@@ -660,7 +660,8 @@ class Course(db.Model):
 
     @property
     def grade_list(self):
-        list = [attendance.applicant for attendance in self.filter_attendances(waiting=False) if attendance.grade is not None]
+        list = [attendance.applicant for attendance in self.filter_attendances(waiting=False) if
+                attendance.grade is not None]
         list.sort()
         return list
 
@@ -1345,28 +1346,41 @@ class ImportFormat(db.Model):
 
        :param id: unique ID
        :param name: human readable name for the format
-       :param grade_column: defines the xls column in which the grade is stored and from which is read from
-       :param languages: list of associated languages for which the import format is intended (NULL for any)
+       :param grade_column: defines the xls column in which the grade is read from (sheet Notenliste)
+       :param mail_column: defines the xls column in which the mail is read from (sheet RAWDATA)
+       :param ects_column: defines the xls column in which the ects are read from (sheet Notenliste)
+       :param hide_grade_column: defines the xls column in which the "bestanden" mark is read from (sheet Notenliste)
+       :param ts_requested_column: defines the xls column in which the "Teilnahmeschein" mark is read from (sheet Notenliste)
+       :param ts_received_column: defines the xls column in which the "Schein erhalten" mark is read from (sheet Notenliste)
+       :param languages: list of associated languages for which the import format is intended (NULL for any or specified
+                         language was not found when db was initialized)
     """
 
     __tablename__ = 'import_format'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
-    grade_column = db.Column(db.String(10), nullable=False)
+    grade_column = db.Column(db.String(10), nullable=False)  # required
     mail_column = db.Column(db.String(10), nullable=True)
     ects_column = db.Column(db.String(10), nullable=True)
+    hide_grade_column = db.Column(db.String(10), nullable=True)
+    ts_requested_column = db.Column(db.String(10), nullable=True)
+    ts_received_column = db.Column(db.String(10), nullable=True)
 
     # Define a one-to-many relationship with Language
     # (one import format can be used for multiple languages, but each language only has one import format)
     languages = db.relationship("Language", back_populates="import_format")
 
-    def __init__(self, name, grade_column, mail_column=None, languages=None):
+    def __init__(self, name, grade_column, mail_column=None, hide_grade_column=None, ts_requested_column=None,
+                 ts_received_column=None, languages=None):
         if languages is None:
             languages = []
         self.name = name
         self.grade_column = grade_column
         self.mail_column = mail_column
+        self.hide_grade_column = hide_grade_column
+        self.ts_requested_column = ts_requested_column
+        self.ts_received_column = ts_received_column
         self.languages = languages
 
     def __repr__(self):
