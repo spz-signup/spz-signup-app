@@ -675,8 +675,8 @@ class Course(db.Model):
 
         n_grades = sum(1 for attendance in attendances if attendance.grade is not None)
 
-        # if more than 40 % of the grades are entered, the course is considered graded
-        return (n_grades / n_total) > 0.4
+        # if more than 15 % of the grades are entered, the course is considered graded
+        return (n_grades / n_total) > 0.15
 
     class Status(Enum):
         VACANCIES = 1
