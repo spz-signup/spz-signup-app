@@ -69,6 +69,18 @@ def validate_email(email):
 
     return True
 
+def safely_get_cell_value(row):
+    try:
+        return row[0].value
+    except (IndexError, AttributeError):
+        return None
+
+def get_cell_value(row):
+    if row and len(row) > 0:  # Ensure row has at least one cell
+        value = row[0].value if row[0] is not None else None
+    else:
+        value = None
+    return value
 
 class TeacherManagement:
     @staticmethod
@@ -143,6 +155,7 @@ class TeacherManagement:
                         flash(_('<strong>Richtige Notenliste ausgewählt?</strong><br>Der Kursname "{}" in der Notenliste stimmt nicht mit dem Kurs "{}" überein.'
                                 ' Wurde die richtige Notenliste hochgeladen? Bitte überprüfen!'.format(
                             read_course_name, course.full_name)), 'warning')
+                    break
 
         # grade import
         rawdata_sheet = grade_wb['RAWDATA']
@@ -193,7 +206,6 @@ class TeacherManagement:
         # warnings importing the grades, tuple: (work sheet, coordinate, text)
         # rawdata -> 0, Notenliste -> 1
         warnings = []
-
         success = 0
         # simultaneously iterate over mail column in RAWDATA sheet and grade column in Notenliste sheet (and additional columns)
         for mail_row, grade_row, ects_row, hide_grade_row, ts_req_row, ts_rec_row in zip(
@@ -229,13 +241,13 @@ class TeacherManagement:
                 max_row=max_row)
         ):
             # rows returned as a tuple, obtain first and only element
-            read_mail = mail_row[0].value
-            read_grade = grade_row[0].value
+            read_mail = safely_get_cell_value(mail_row)
+            read_grade = safely_get_cell_value(grade_row)
             # additional import attributes
-            read_ects = ects_row[0].value
-            read_hide_grade = hide_grade_row[0].value
-            read_ts_requested = ts_req_row[0].value
-            read_ts_received = ts_rec_row[0].value
+            read_ects = safely_get_cell_value(ects_row)
+            read_hide_grade = safely_get_cell_value(hide_grade_row)
+            read_ts_requested = safely_get_cell_value(ts_req_row)
+            read_ts_received = safely_get_cell_value(ts_rec_row)
 
             if read_mail is None or read_grade is None or read_grade == 0:
                 #if read_grade is None and read_mail is not None:

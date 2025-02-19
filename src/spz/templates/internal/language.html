@@ -53,7 +53,7 @@ Sprache: {{ language.name }}
                 <td class="collapsing"><a href="{{ url_for('print_course_presence', course_id=course.id) }}"><button type="button" class="ui button">PDF</button></a></td>
                 <td class="collapsing"><a href="{{ url_for('export', type='course', id=course.id) }}"><button type="button" class="ui button">Export</button></a></td>
                 <td class="collapsing"><a href=" {{ url_for('grade', course_id=course.id) }} ">
-                    <button type="button" class="ui button"><i class="edit icon"></i></button></a>
+                    <button type="button" class="ui button {% if course.grade_sheets|length > 0 %} positive {% endif %}"><i class="edit icon"></i></button></a>
                 </td>
             </tr>
             {% if sums.update({
