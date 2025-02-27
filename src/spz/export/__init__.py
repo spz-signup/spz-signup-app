@@ -68,6 +68,8 @@ def init_formatter(lookup_table, format):
 
 def export_course_list(courses, format, filename='Kursliste'):
     formatter = init_formatter(course_formatters, format)
+    if format.formatter == 'zip-excel' and len(courses) == 1:
+        formatter.set_is_single_section(True)
     filename = specify_export_name(courses)
     for course in courses:
         formatter.begin_section(course.full_name)

@@ -119,8 +119,11 @@ class ExcelZipWriter(ExcelWriter):
         self.check_for_expressions()
         self.tempfile = NamedTemporaryFile()
         self.zip = ZipFile(self.tempfile, 'w')
-        self.is_single_section = True
+        self.is_single_section = False
         self.single_section_data = None
+
+    def set_is_single_section(self, single: bool):
+        self.is_single_section = single
 
     def check_for_expressions(self):
         # set course information
