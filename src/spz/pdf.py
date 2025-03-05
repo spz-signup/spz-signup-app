@@ -165,9 +165,9 @@ class BillGenerator(SPZPDF):
         this.rahmen = 0
         this.breite = 128
         now = datetime.now()
-        if now.month < 3:
+        if now.month < 4:
             semester = 'Wintersemester {0}/{1}'.format(now.year - 1, now.year)
-        elif now.month < 9:
+        elif now.month < 10:
             semester = 'Sommersemester {0}'.format(now.year)
         else:
             semester = 'Wintersemester {0}/{1}'.format(now.year, now.year + 1)
@@ -401,16 +401,16 @@ class ParticipationCertGenerator(SPZPDF):
         this.width = 40
         this.height = 10
         now = datetime.now()
-        if now.month < 3:
+        if now.month < 4:
             this.semester = 'Wintersemester {0}/{1}'.format(now.year - 1, now.year)
             this.weeks = 14
-        elif now.month < 9:
+        elif now.month < 10:
             this.semester = 'Sommersemester {0}'.format(now.year)
             this.weeks = 13
         else:
             this.semester = 'Wintersemester {0}/{1}'.format(now.year, now.year + 1)
             this.weeks = 14
-        this.weeks = 14
+        this.weeks = 14 # managements wants to set 14 weeks for both semesters
         this.set_font('Helvetica', '', size=36)
         path = os.path.join(os.getcwd(), 'spz/', 'static/img/kit-logo.png')
         this.image(path, x=15, y=16, w=40)
