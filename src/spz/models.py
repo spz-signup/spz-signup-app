@@ -1401,7 +1401,7 @@ class ImportFormat(db.Model):
     languages = db.relationship("Language", back_populates="import_format")
 
     def __init__(self, name, grade_column, mail_column=None, hide_grade_column=None, ts_requested_column=None,
-                 ts_received_column=None, languages=None):
+                 ts_received_column=None, ects_column=None, languages=None):
         if languages is None:
             languages = []
         self.name = name
@@ -1410,6 +1410,7 @@ class ImportFormat(db.Model):
         self.hide_grade_column = hide_grade_column
         self.ts_requested_column = ts_requested_column
         self.ts_received_column = ts_received_column
+        self.ects_column = ects_column
         self.languages = languages
 
     def __repr__(self):
