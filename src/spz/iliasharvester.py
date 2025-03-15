@@ -53,7 +53,7 @@ def download_data():
             'client_id': 'pilot',
             'cmd': 'post',
             'cmdClass': 'ilstartupgui',
-            'cmdNode': '10b',
+            'fallbackCmd': 'doStandardAuthentication',
             'lang': 'de',
             'rtoken': '',
         },
@@ -77,7 +77,7 @@ def download_data():
             'baseClass': 'ilrepositorygui',
             'cmd': 'outEvaluation',
             'cmdClass': 'iltestevaluationgui',
-            'cmdNode': 'x2:rm:13i',
+            'cmdNode': 'xo:r5:13s',
             'ref_id': ref_id,
         },
         cookies=cookies,
@@ -100,7 +100,7 @@ def download_data():
             'baseClass': 'ilrepositorygui',
             'cmd': 'post',
             'cmdClass': 'iltestevaluationgui',
-            'cmdNode': 'x2:rm:13i',
+            'cmdNode': 'xo:r5:13s',
             'fallbackCmd': 'outEvaluation',
             'ref_id': ref_id,
             'rtoken': rtoken,
@@ -130,7 +130,7 @@ def download_data():
             'baseClass': 'ilrepositorygui',
             'cmd': 'post',
             'cmdClass': 'iltestevaluationgui',
-            'cmdNode': 'x2:rm:13i',
+            'cmdNode': 'xo:r5:13s',
             'fallbackCmd': 'exportEvaluation',
             'ref_id': ref_id,
             'rtoken': rtoken,
@@ -173,7 +173,7 @@ def parse_data(it):
     # when this happens we are going to double check the parser
     head = next(reader)
     assert head[0] == 'Name'
-    assert head[1] == 'Benutzername'
+    assert head[1] == 'Anmeldename'
     assert head[2] == 'Matrikelnummer'
     assert head[3] == 'Testergebnis in Punkten'
     assert head[4] == 'Maximal erreichbare Punktezahl'
