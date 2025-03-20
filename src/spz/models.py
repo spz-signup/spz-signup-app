@@ -772,6 +772,11 @@ class Language(db.Model):
         return self.name.lower() < other.name.lower()
 
     @property
+    def courses_sorted(self):
+        courses = [c for c in self.courses]
+        return sorted(courses, key=lambda x: x.full_name)
+
+    @property
     def signup_rnd_begin(self):
         return self.signup_begin
 

@@ -14,7 +14,6 @@ import json
 from datetime import datetime, timezone
 
 from redis import ConnectionError
-
 from sqlalchemy import and_, func, not_
 
 from flask import request, redirect, render_template, url_for, flash, jsonify, make_response
