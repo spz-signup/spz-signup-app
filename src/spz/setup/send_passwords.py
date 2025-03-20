@@ -10,6 +10,7 @@ if __name__ == '__main__':
 
     with app.app_context(), app.test_request_context():
         for user in users:
+            print('      {}'.format(user.email))
             send_password_reset_to_user(user)
 
     print('Done.')

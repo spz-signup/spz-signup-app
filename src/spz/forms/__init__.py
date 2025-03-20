@@ -820,12 +820,21 @@ class LoginForm(FlaskForm):
 class PasswordResetForm(FlaskForm):
     """Represents the password reset form
     """
-
+    pw_length = 8
     reset_token = StringField('Reset Token', [validators.DataRequired('Reset Token muss angegeben werden')])
     password = StringField('Passwort', [validators.DataRequired('Passwort muss angegeben werden'),
-                                        validators.Length(min=8,
+                                        validators.Length(min=pw_length,
                                                           message='Das Passwort muss mindestens %(min)d Zeichen haben.')])
+    confirm_pw = StringField(
+        'Passwort Bestätigen',
+        [validators.EqualTo('password', message='Passwörter müssen übereinstimmen.')]
+    )
 
+    def __init__(self, *args, **kwargs):
+        super(PasswordResetForm, self).__init__(*args, **kwargs)
+
+    def get_pw_length(self):
+        return self.pw_length
 
 class TagForm(FlaskForm):
     """Represents the form for the input of a tag.

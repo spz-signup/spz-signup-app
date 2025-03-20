@@ -23,14 +23,14 @@
 </div>
 {% endmacro %}
 
-{% macro render_pw_input(field, width=12, placeholder=None, required=True, skip=False, skip_value=None, required_extras=None, type="text", help=None, icon=None, step=None, min=None, max=None, readonly=False) %}
-<div class="{% if required %}required {% endif %}field{% if field.errors %} error{% endif %}">
+{% macro render_pw_input(field, width=12, placeholder=None, required=True, skip=False, skip_value=None, required_extras=None, type="text", id='password', help=None, icon=None, step=None, min=None, max=None, readonly=False) %}
+<div class="{% if required %}required {% endif %}field {% if field.errors %} error{% endif %}">
     <div class="ui labeled input password-field">
         <div class="ui label" for="{{ field.id }}">
             {% if icon %}<i class="{{ icon }} icon"></i>{% endif %}
             {{ field.label }}
         </div>
-        {{ render_raw_input(field, placeholder, required, required_extras, 'password', step, min, max, readonly) }}
+        {{ render_raw_input(field, placeholder, required, required_extras, 'password', step, min, max, readonly, id) }}
         <i class="eye icon eye-icon" id="togglePassword_{{ field.id }}"></i>
     </div>
     {% if skip %}
@@ -46,8 +46,8 @@
 {% endmacro %}
 
 
-{% macro render_raw_input(field, placeholder=None, required=True, required_extras=None, type="text", step=None, min=None, max=None, readonly=False) %}
-<input type="{{ type }}" id="{{ field.id }}" name="{{ field.id }}"{% if field.data != None %} value="{{ field.data }}" {% endif %} placeholder="{{ placeholder|default('', true) }}"{% if required %} data-required="true"{% endif %}{% if step %} step="{{ step }}"{% endif %}{% if min %} min="{{ min }}"{% endif %}{% if max %} max="{{ max }}"{% endif %}{% if readonly == True %} readonly {% endif %}{{ (' ' ~ required_extras|safe) if required_extras }} />
+{% macro render_raw_input(field, placeholder=None, required=True, required_extras=None, type="text", step=None, min=None, max=None, readonly=False, id=None) %}
+<input type="{{ type }}" id="{% if id %}{{id}}{% else %}{{ field.id }}{% endif %}" name="{{ field.id }}"{% if field.data != None %} value="{{ field.data }}" {% endif %} placeholder="{{ placeholder|default('', true) }}"{% if required %} data-required="true"{% endif %}{% if step %} step="{{ step }}"{% endif %}{% if min %} min="{{ min }}"{% endif %}{% if max %} max="{{ max }}"{% endif %}{% if readonly == True %} readonly {% endif %}{{ (' ' ~ required_extras|safe) if required_extras }} />
 {% endmacro %}
 
 {% macro render_slider(field, required=True, min=0, max=10, step=1, help=None) %}

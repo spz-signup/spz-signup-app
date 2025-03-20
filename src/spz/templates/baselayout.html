@@ -146,49 +146,14 @@
     </div>
 </div>
 
+
+{% assets "all_js" %}
+    <script src="{{ ASSET_URL }}"></script>
+{% endassets %}
+
 {% block scripts %}
-    {% assets "all_js" %}
-        <script src="{{ ASSET_URL }}"></script>
-    {% endassets %}
 
-    <script>
-        // copies text of the hiddenText input field to the clipboard
-        function copyToClipboard() {
-            var copyText = document.getElementById("hiddenText").value;
-            navigator.clipboard.writeText(copyText).then(function () {
-                showNotification('Link in Zwischenablage kopiert!');
-            }, function (err) {
-                console.error('Async: Link konnte nicht kopiert werden: ', err);
-            });
-        }
-
-        // notification of successful copy-to-clipboard process
-        function showNotification(message) {
-            var notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.display = 'block';
-            setTimeout(function () {
-                notification.style.display = 'none';
-            }, 2250); // Show notification for 2.25 seconds
-        }
-
-        // toggle password visibility in login form
-        $(document).ready(function () {
-            $('.eye-icon').click(function () {
-                var input = $(this).siblings('input');
-                var icon = $(this);
-                if (input.attr('type') === 'password') {
-                    input.attr('type', 'text');
-                    icon.removeClass('eye').addClass('eye slash');
-                } else {
-                    input.attr('type', 'password');
-                    icon.removeClass('eye slash').addClass('eye');
-                }
-            });
-        });
-    </script>
 {% endblock scripts %}
-
 
 
 {{ rlrc_comment() }}

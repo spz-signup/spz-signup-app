@@ -37,6 +37,7 @@ all_js = Bundle('js/jquery.min.js',
                 'js/moment.min.js',
                 'js/moment-de.js',
                 'js/spz.js',
+                'js/pswmeter.min.js',
                 filters='rjsmin', output='js/packed-all.js')
 
 

@@ -6,7 +6,7 @@
             <a href="{{ url_for('internal') }}"><h1>Interner Bereich</h1></a>
         </div>
         {% if current_user.is_admin %}
-        <a class="item" href="{{ url_for('teacher') }}"><i class="inbox icon"></i> Meine Kurse</a>
+            <a class="item" href="{{ url_for('teacher') }}"><i class="inbox icon"></i> Meine Kurse</a>
         {% endif %}
         {% if current_user.is_admin_or_superuser %}
             <a class="item" href="{{ url_for('registrations') }}"><i class="barcode icon"></i> Matrikelnummern</a>
@@ -62,4 +62,21 @@
     {% assets "tools_js" %}
         <script src="{{ ASSET_URL }}"></script>
     {% endassets %}
+
+    <script>
+        // Ensure DOM is fully loaded before executing jQuery
+        $(document).ready(function () {
+            $('.eye-icon').click(function () {
+                var input = $(this).siblings('input');
+                var icon = $(this);
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('eye').addClass('eye slash');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('eye slash').addClass('eye');
+                }
+            });
+        });
+    </script>
 {% endblock scripts %}
