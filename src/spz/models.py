@@ -127,7 +127,9 @@ class Attendance(db.Model):
 
     registered = db.Column(db.DateTime(), default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
     payingdate = db.Column(db.DateTime())
-    signoff_window = db.Column(db.DateTime(), default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    signoff_window = db.Column(db.DateTime(),
+                               default=lambda: datetime.now(timezone.utc).replace(tzinfo=None) + app.config[
+                                   'SELF_SIGNOFF_PERIOD'])
     # date when the student is moved from the waiting list to the course
     enrolled_at = db.Column(db.DateTime(), nullable=True)
 
@@ -383,7 +385,7 @@ class Applicant(db.Model):
         results_latest = [
             approval.percent
             for approval
-            in Approval.get_for_tag(tag=self.tag, latest=True) # basically gets ilias harvester results
+            in Approval.get_for_tag(tag=self.tag, latest=True)  # basically gets ilias harvester results
         ]
         if results_latest:
             return max(results_latest)
@@ -1225,7 +1227,7 @@ class LogEntry(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime(), nullable=False)
-    msg = db.Column(db.String(140), nullable=False)
+    msg = db.Column(db.String(256), nullable=False)
     course = db.relationship("Course")  # no backref
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
 
