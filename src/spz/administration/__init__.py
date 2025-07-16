@@ -15,6 +15,7 @@ from openpyxl.reader.excel import load_workbook
 from openpyxl.utils import column_index_from_string
 from sqlalchemy import func
 import re
+import math
 
 
 def get_course_ids():
@@ -271,7 +272,7 @@ class TeacherManagement:
                 if applicant:
                     attendance = course.get_course_attendance(course.id, applicant.id)
                     if attendance:
-                        attendance.grade = to_float(read_grade)
+                        attendance.grade = math.ceil(to_float(read_grade))
 
                         # update ects if present
                         if read_ects and is_valid_float(read_ects): # checks for None and not empty string AND valid float
