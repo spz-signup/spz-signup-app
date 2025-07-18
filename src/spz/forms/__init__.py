@@ -182,13 +182,14 @@ class SignupFormExternal(FlaskForm):
         'Nachname',
         [validators.Length(1, 60, 'Länge muss zwischen 1 and 60 Zeichen sein')]
     )
-    phone = StringField(
-        'Telefon',
-        [
-            validators.Length(max=20, message='Länge darf maximal 20 Zeichen sein'),
-            validators.PhoneValidator()
-        ]
-    )
+    # management wants to remove the phone number field
+    # phone = StringField(
+    #     'Telefon',
+    #     [
+    #         validators.Length(max=20, message='Länge darf maximal 20 Zeichen sein'),
+    #         validators.PhoneValidator()
+    #     ]
+    # )
     mail = StringField(
         'E-Mail',
         [
@@ -240,7 +241,8 @@ class SignupFormExternal(FlaskForm):
         return self.last_name.data
 
     def get_phone(self):
-        return self.phone.data
+        # return self.phone.data
+        return None
 
     def get_mail(self):
         return self.mail.data
@@ -292,13 +294,13 @@ class SignupFormInternal(FlaskForm):
         'Nachname',
         [validators.Length(1, 60, 'Länge muss zwischen 1 and 60 Zeichen sein')]
     )
-    phone = StringField(
-        'Telefon',
-        [
-            validators.Length(max=20, message='Länge darf maximal 20 Zeichen sein'),
-            validators.PhoneValidator()
-        ]
-    )
+    # phone = StringField(
+    #     'Telefon',
+    #     [
+    #         validators.Length(max=20, message='Länge darf maximal 20 Zeichen sein'),
+    #         validators.PhoneValidator()
+    #     ]
+    # )
     mail = StringField(
         'E-Mail',
         [
@@ -384,7 +386,8 @@ class SignupFormInternal(FlaskForm):
         return self.last_name.data
 
     def get_phone(self):
-        return self.phone.data
+        #return self.phone.data
+        return None
 
     def get_mail(self):
         return self.mail.data
