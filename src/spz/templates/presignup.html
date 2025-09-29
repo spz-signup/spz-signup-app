@@ -7,14 +7,14 @@ Anmeldung {{ config['SEMESTER_NAME'] }}
 
 
 {% block body %}
-<div class="row">
+<!--<div class="row">
     <div class="ui warning message">
         <i class="close icon"></i>
         <span style="font-weight: bold;">Achtung:</span> Geändertes Anmeldeverfahren ab dem Wintersemester 2023/24.
         Studierende und Mitarbeiter*innen des KIT nutzen bitte die Anmeldung für KIT-Angehörige.
-        Angehörige anderer Hochschulen und andere nutzen die Anmeldung für Externe.
+        Angehörige anderer Hochschulen und Andere nutzen die Anmeldung für Externe.
     </div>
-</div>
+</div>-->
 
 <div class="row">
         <form id="signup" class="ui form" method="post" data-persist="garlic">
@@ -29,7 +29,7 @@ Anmeldung {{ config['SEMESTER_NAME'] }}
                 <div class="or" data-text="/"></div>
                 <button type="submit" name="type" value="external" class="ui button">Anmeldung Externe</button>
             </div>
-            <span class="help-block">Studierende und Mitarbeiter*innen des KIT nutzen bitte die Anmeldung für KIT-Angehörige. Angehörige anderer Hochschulen und andere nutzen die Anmeldung für Externe.</span>
+            <span class="help-block">Studierende und Mitarbeiter*innen des KIT nutzen bitte die Anmeldung für KIT-Angehörige. Angehörige anderer Hochschulen und Andere nutzen die Anmeldung für Externe.</span>
         </form>
 </div>
 {% endblock body %}
