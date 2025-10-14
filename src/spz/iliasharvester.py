@@ -14,7 +14,7 @@ from urllib import parse
 # headers that will be used for all Ilias HTTPS requests
 headers = {
     'Accept-Language': 'en-US,en;q=0.8,de-DE;q=0.5,de;q=0.3',
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:44.0) Gecko/20100101 Firefox/44.0',
+    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0',
 }
 
 
@@ -36,7 +36,7 @@ def download_data():
     url = app.config['ILIAS_URL']
 
     # get inital cookies
-    url0 = '{}login.php'.format(url)
+    url0 = '{}'.format(url)
     r0 = requests.get(
         url0,
         headers=headers
@@ -49,7 +49,7 @@ def download_data():
     r1 = requests.post(
         url1,
         params={
-            'baseClass': 'ilStartUpGUI',
+            'baseClass': 'ilstartupgui',
             'client_id': 'pilot',
             'cmd': 'post',
             'cmdClass': 'ilstartupgui',
@@ -58,9 +58,8 @@ def download_data():
             'rtoken': '',
         },
         data={
-            'cmd[doStandardAuthentication]': 'Anmelden',
-            'password': password,
-            'username': username,
+            'login_form/input_3/input_4': username,
+            'login_form/input_3/input_5': password,
         },
         cookies=cookies,
         headers=headers
@@ -76,14 +75,15 @@ def download_data():
         params={
             'baseClass': 'ilrepositorygui',
             'cmd': 'outEvaluation',
-            'cmdClass': 'iltestevaluationgui',
-            'cmdNode': 'xo:r5:13s',
+            'cmdClass': 'ilTestEvaluationGUI',
+            'cmdNode': 'y0:rj:13h',
             'ref_id': ref_id,
         },
         cookies=cookies,
         headers=headers
     )
     assert r2.status_code == 200
+    assert 'Daten exportieren' in r2.text
     text2 = r2.text
     # these tokens occur multiple times but seem to be unique
     export_parameters = get_export_parameters(text2)
@@ -99,8 +99,8 @@ def download_data():
         params={
             'baseClass': 'ilrepositorygui',
             'cmd': 'post',
-            'cmdClass': 'iltestevaluationgui',
-            'cmdNode': 'xo:r5:13s',
+            'cmdClass': 'ilTestEvaluationGUI',
+            'cmdNode': 'y0:rj:13h',
             'fallbackCmd': 'outEvaluation',
             'ref_id': ref_id,
             'rtoken': rtoken,
@@ -128,10 +128,9 @@ def download_data():
         params={
             'active_id': active_id,
             'baseClass': 'ilrepositorygui',
-            'cmd': 'post',
-            'cmdClass': 'iltestevaluationgui',
-            'cmdNode': 'xo:r5:13s',
-            'fallbackCmd': 'exportEvaluation',
+            'cmd': 'csv',
+            'cmdClass': 'ilTestEvaluationGUI',
+            'cmdNode': 'y0:rj:13h',
             'ref_id': ref_id,
             'rtoken': rtoken,
         },
@@ -169,7 +168,7 @@ def parse_data(it):
     reader = csv.reader(fp, dialect=csv.excel, delimiter=';')
 
     # get first row and do sanity check
-    # don't be to smart here so we get errors in case the Ilias output changes.
+    # don't be too smart here so we get errors in case the Ilias output changes.
     # when this happens we are going to double check the parser
     head = next(reader)
     assert head[0] == 'Name'
@@ -185,7 +184,8 @@ def parse_data(it):
     for idx, row in enumerate(reader, 1):
         # for some reason, Ilias emits a new header before every line,
         # so we only parse every second line.
-        if idx % 2 == 0:
+        # But it seems to be not always the case, so we check if name and username are present instead.
+        if not bool(row[0].strip()) or not bool(row[1].strip()):
             continue
 
         # ==========================
