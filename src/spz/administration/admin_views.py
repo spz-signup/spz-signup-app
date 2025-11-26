@@ -12,6 +12,9 @@ from flask import request, redirect, url_for, flash, jsonify, make_response, sen
 from flask_login import current_user, login_required, login_user, logout_user
 from flask_mail import Message
 
+import re
+import unicodedata
+
 from spz import app
 from spz import models, db, log
 from spz.administration import TeacherManagement, is_valid_float
@@ -231,7 +234,6 @@ def edit_teacher(id):
     if form.validate_on_submit():
 
         try:
-
             changes = False
 
             if teacher.first_name != form.first_name.data:
@@ -464,6 +466,7 @@ def import_grade(course_id):
     if form.validate_on_submit():
         try:
             file = form.file.data
+            file_input_name = file.filename
 
             # create an in-memory copy of the file, so the original uploaded file stays untouched
             # during the grade import process (prevent file corruption)
@@ -479,16 +482,35 @@ def import_grade(course_id):
             n_success = TeacherManagement.import_grades(file_copy, course)
 
             # save file to database: first add the db entry to map to the file
-            suffix = file.filename.split(".")[
-                -1]  # only '.xlsx' files pass the form validation (.xls not compatible withopenpyxl)
-            file_increment = len(course.grade_sheets) + 1
-            course_name = course.full_name.replace(" ", "_").replace("/", "_")
-            filename = course_name + "_version" + str(file_increment) + "." + suffix
+            base_name, ext = os.path.splitext(file_input_name.strip())
 
-            # in case there have been file deletions, a not used filename is chosen
+            # perform different sanity checks on the file name input
+            base_name = unicodedata.normalize('NFKC', base_name)
+            base_name = re.sub(r'[\0\r\n\t]', '', base_name)
+            base_name = base_name.replace('/', '_').replace('\\', '_')
+            base_name = base_name.replace(" ", "_")
+
+            suffix = ext.lstrip('.')   # only '.xlsx' files pass the form validation (.xls not compatible withopenpyxl)
+
+            # slices the input string considering an end extension to not exceed the given limit length
+            def truncate(name: str, len_suffix: int, max: int=60):
+                if len(name) >= (max - len_suffix):
+                    return name[:(max - len_suffix)]
+                return name
+
+            base_name = truncate(base_name, len(suffix)+1)
+
+            ### check for collisions and increment ###
+            file_increment = 0
+            # first check, if full filename already exists
+            filename = base_name + "." + suffix
             while os.path.exists(os.path.join(app.config['FILE_DIR'], filename)):
                 file_increment += 1
-                filename = course_name + "_version" + str(file_increment) + "." + suffix
+                # check for length after incrementing
+                filename_end = str(file_increment) + "." + suffix
+                # readjust base_name (without extension) if it is outside of the limit
+                base_name = truncate(base_name, len(filename_end))
+                filename = base_name + filename_end
 
             file_entry = models.GradeSheets(
                 course_id=course.id,
