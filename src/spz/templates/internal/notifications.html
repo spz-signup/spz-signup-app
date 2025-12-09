@@ -19,6 +19,7 @@ Mail Zentrale
         <h3 class="ui dividing header">Benötigte Angaben</h3>
         {{ render_option(form.mail_sender) }}
         {{ render_input(form.mail_subject) }}
+        {{ render_boolean(form.copy_to_sender) }}
         {{ render_textarea(form.mail_body) }}
         <h3 class="ui dividing header">Empfänger der Mail</h3>
         {{ render_option(form.mail_courses, multiple=True, size=10) }}

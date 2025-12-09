@@ -801,10 +801,17 @@ def notifications():
         try:
             has_sent_cc = False
             recipients = form.get_recipients()
+            courses = form.get_courses()
+            print(f"Send mail from <{form.get_sender()}> "
+                  f"to {', '.join([str(c) for c in courses])}, "
+                  f"bcc=<{form.get_bcc()}>, cc=<{form.get_cc()}>, copy_to_sender={form.get_copy_to_sender()}")
+            if form.get_copy_to_sender():
+                recipients.append(form.get_sender())
             for recipient in recipients:
                 cc_cached = None
                 bcc_cached = None
                 if not has_sent_cc:
+                    # get_cc / get_bcc returns none if empty
                     cc_cached = form.get_cc()
                     bcc_cached = form.get_bcc()
                     has_sent_cc = True

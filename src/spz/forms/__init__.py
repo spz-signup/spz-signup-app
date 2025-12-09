@@ -513,6 +513,10 @@ class NotificationForm(FlaskForm):
         [validators.DataRequired('Absender muss angegeben werden')],
         coerce=int
     )
+    copy_to_sender = BooleanField(
+        'Sende Kopie der Mail an den Absender',
+        default=True
+    )
     waiting_filter = TriStateField(
         default=None,
         labels=['Nur Aktive',
@@ -571,13 +575,18 @@ class NotificationForm(FlaskForm):
         return list(set([mail.strip() for mail in s.split(',') if '@' in mail]))  # XXX
 
     def get_cc(self):
-        return self._unique_mails_from_str(self.mail_cc.data)
+        mails = self._unique_mails_from_str(self.mail_cc.data)
+        return mails if mails else None
 
     def get_bcc(self):
-        return self._unique_mails_from_str(self.mail_bcc.data)
+        mails = self._unique_mails_from_str(self.mail_bcc.data)
+        return mails if mails else None
 
     def get_sender(self):
         return dict(self._sender_choices()).get(self.mail_sender.data)
+
+    def get_copy_to_sender(self):
+        return self.copy_to_sender.data
 
     @staticmethod
     def _sender_choices():
