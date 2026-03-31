@@ -1,0 +1,42 @@
+{% extends 'baselayout.html' %}
+{% from 'formhelpers.html' import csrf_field, render_input, render_option, render_radio, render_submit %}
+
+{% block caption %}
+Neues Anmeldeverfahren zum Sommersemester 2026
+{% endblock caption %}
+
+
+{% block body %}
+<!--<div class="row">
+    <div class="ui warning message">
+        <i class="close icon"></i>
+        <span style="font-weight: bold;">Achtung:</span> Geändertes Anmeldeverfahren ab dem Wintersemester 2023/24.
+        Studierende und Mitarbeiter*innen des KIT nutzen bitte die Anmeldung für KIT-Angehörige.
+        Angehörige anderer Hochschulen und Andere nutzen die Anmeldung für Externe.
+    </div>
+</div>-->
+
+<div class="row">
+    <div class="ui floating orange message">
+        <h3>Hinweis</h3>
+        <strong>
+            <p>Die Anmeldung unter <i>anmeldung.spz.kit.edu</i> wird ab dem Sommersemester 2026 nicht mehr verwendet.</p>
+        <p>Die Anmeldung zu einem Sprachkurs ist im neuen <i>Sign Me Up Plus</i> Portal
+            <a href="https://signmeup.studium.kit.edu/offer/SPZ?semesterId=20261">hier</a> möglich.</p>
+        <p>Informationen zum Kursangebot und Ablauf der Anmeldung können Sie
+            <a href="https://spz.kit.edu">hier</a> finden.</p>
+        </strong>
+    </div>
+    <div class="ui fluid buttons">
+        <a href="https://signmeup.studium.kit.edu/offer/SPZ?semesterId=20261" class="ui positive button confirm">SignMeUp+</a>
+        <div class="or" data-text="/"></div>
+        <a href="https://spz.kit.edu" class="ui info button">Kursinfos</a>
+    </div>
+
+</div>
+{% endblock body %}
+
+
+{% block scripts %}
+{{ super() }}
+{% endblock scripts %}

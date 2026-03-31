@@ -60,7 +60,7 @@ def check_precondition_with_auth(cond, msg, auth=False):
         return False
 
 
-@templated('presignup.html')
+@templated('changed_signup.html')
 def index():
     one_time_token = request.args.get('token', None)
 
